@@ -7,7 +7,37 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-function drawSvg(size) {
+// Clean vector version (same look as build/icon.ico): gradients instead of thousands of opaque rects,
+// which used to cover each other so only the last layer showed.
+function generateSvg(size = 512) {
+  const c = size / 2;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgb(28,10,64)"/>
+      <stop offset="100%" stop-color="rgb(8,4,24)"/>
+    </radialGradient>
+    <linearGradient id="lane" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="rgb(0,200,255)" stop-opacity="0"/>
+      <stop offset="50%" stop-color="rgb(0,200,255)" stop-opacity="1"/>
+      <stop offset="100%" stop-color="rgb(0,200,255)" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="${size * 0.012}" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="disc"><circle cx="${c}" cy="${c}" r="${c}"/></clipPath>
+  </defs>
+  <g clip-path="url(#disc)">
+    <circle cx="${c}" cy="${c}" r="${c}" fill="url(#bg)"/>
+    <rect x="${c - size * 0.14}" y="0" width="${size * 0.28}" height="${size}" fill="url(#lane)"/>
+  </g>
+  <circle cx="${c}" cy="${c}" r="${c * 0.82}" fill="none" stroke="rgb(255,40,200)" stroke-width="${c * 0.09}" filter="url(#glow)"/>
+</svg>`;
+}
+
+function drawSvgOld(size) {
   const c = size / 2;
   const r = size / 2;
   const d = (x, y) => Math.sqrt((x + 0.5 - c) ** 2 + (y + 0.5 - c) ** 2) / r;
@@ -56,8 +86,8 @@ function drawSvg(size) {
   return shapes;
 }
 
-function generateSvg(size = 512) {
-  const shapes = drawSvg(size);
+function generateSvgOld(size = 512) {
+  const shapes = drawSvgOld(size);
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
   <rect width="${size}" height="${size}" fill="#080406" />
