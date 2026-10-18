@@ -1,0 +1,62 @@
+{
+  "name": "neon-dash",
+  "productName": "Neon Dash",
+  "version": "1.0.0",
+  "description": "Neon Dash: an original 3D endless runner set in a neon city at night.",
+  "author": "Neon Dash",
+  "license": "MIT",
+  "private": false,
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "vite build && electron .",
+    "dist": "vite build && node scripts/make-icon.mjs && electron-builder --win nsis --x64",
+    "test": "node --test",
+    "icon": "node scripts/make-icon.mjs",
+    "smoke": "vite build && node scripts/smoke.mjs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.4.0",
+    "three": "^0.160.0"
+  },
+  "build": {
+    "appId": "in.classgrid.neondash",
+    "productName": "Neon Dash",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Neon-Dash-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Neon Dash",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "runAfterFinish": true
+    }
+  }
+}
