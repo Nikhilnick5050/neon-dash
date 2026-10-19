@@ -79,7 +79,7 @@ export class Particles {
     this.posAttr.needsUpdate = true;
     this.colAttr.needsUpdate = true;
   }
-
+ you o
   clear() {
     this.life.fill(0);
     for (let i = 0; i < this.max; i++) this.pos[i * 3 + 1] = -999;
