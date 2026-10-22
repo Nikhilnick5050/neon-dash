@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { Renderer } from '../render/renderer.js';
 import { Sky } from '../world/sky.js';
 import { City } from '../world/city.js';
+import { Trains } from '../world/trains.js';
 import { Robot } from '../world/robot.js';
 import { ObstacleViews } from './obstacles.js';
 import { PickupViews, POWER_COLORS } from './pickups.js';
@@ -35,6 +36,7 @@ export class Game {
     const scene = this.r.scene;
     this.sky = new Sky(scene);
     this.city = new City(scene);
+    this.trains = new Trains(scene);
     this.robot = new Robot(scene);
     this.obstacleViews = new ObstacleViews(scene);
     this.pickupViews = new PickupViews(scene);
@@ -118,6 +120,7 @@ export class Game {
     const s = this.save.settings;
     this.r.setQuality(s.quality);
     this.city.setQuality(s.quality);
+    this.trains.setQuality(s.quality);
     this.audio.setVolumes(s.music, s.sfx);
     this.fpsShown = -1;
     if (saveNow) persist(this.save);
@@ -291,6 +294,7 @@ export class Game {
     }
 
     this.city.update(dist, dt, this.state === 'playing' ? speed : speed * 0.4, this.time);
+    this.trains.update(dist, dt, speed, this.time);
     if (inRun) {
       this.obstacleViews.update(run, dt);
       this.pickupViews.update(run, this.time);
